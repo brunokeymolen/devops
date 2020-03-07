@@ -1,0 +1,13 @@
+#UI input issue while installing tzdata
+#Please select the geographic area in which you live. 
+
+#https://serverfault.com/questions/949991/how-to-install-tzdata-on-a-ubuntu-docker-image
+#Set two environment variables in a docker-compose file. One disables the prompt, and the other sets the timezone.
+
+version: '3.7'
+services:
+  timezone:
+    build: .
+    environment:
+      - TZ=America/New_York
+      - DEBIAN_FRONTEND=noninteractive

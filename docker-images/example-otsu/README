@@ -1,0 +1,162 @@
+Install
+-------
+
+sudo apt install docker.io
+sudo usermod -a -G docker bruno
+reboot (maybe there is another way, like restart docker or so...)
+docker run hello-world
+
+
+Quick Steps
+-----------
+docker build -t brunokeymolen/otsu-project .
+docker image ls
+docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix  brunokeymolen/otsu-project
+
+or no gui and use id : docker run -i -t a3dff6a767e4 /bin/bash
+daemonize            : ctrl-p ctrl-q
+reattach             : docker attach fee2ec7423d9
+
+docker container ls
+
+
+Overview
+--------
+There are Images and containers
+
+Images are build from a file: "Dockerfile"
+list all images:
+docker images ls
+
+Images are run in containers, list running containers:
+docker container ls
+
+
+Search for images available on Docker Hub, pull and run:
+-------------------------------------------------------
+
+docker search ubuntu
+docker pull ubuntu:18.04
+docker pull ubuntu:16.04
+
+bruno@bruno-desktop:~$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+ubuntu              16.04               77be327e4b63        2 weeks ago         124MB
+ubuntu              18.04               72300a873c2c        2 weeks ago         64.2MB
+
+
+docker run -it ubuntu:18.04 /bin/bash
+root@879c9bb432f0:/# cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04.4 LTS"
+
+
+
+Create and build an image from a Dockerfile:
+-------------------------------------------
+
+Create a docker image, standard Ubuntu 18.04 and with Qt5, Boost, etc...
+See: example/Dockerfile
+
+build:
+docker build .
+
+with a tag (name):
+docker build -t brunokeymolen/otsu-project .
+
+docker images
+
+
+
+Remove image:
+------------
+
+bruno@bruno-desktop:~/docker-images/example$ docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+<none>              <none>              5a5c58d00bbb        7 minutes ago       64.2MB
+ubuntu              16.04               77be327e4b63        2 weeks ago         124MB
+ubuntu              18.04               72300a873c2c        2 weeks ago         64.2MB
+hello-world         latest              fce289e99eb9        14 months ago       1.84kB
+bruno@bruno-desktop:~/docker-images/example$ docker image rm 5a5c58d00bbb
+Deleted: sha256:5a5c58d00bbbd6fb7c37f64de0109f7ff8f43c7478d8ef8aac85ae65719194a7
+bruno@bruno-desktop:~/docker-images/example$ docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+ubuntu              16.04               77be327e4b63        2 weeks ago         124MB
+ubuntu              18.04               72300a873c2c        2 weeks ago         64.2MB
+hello-world         latest              fce289e99eb9        14 months ago       1.84kB
+bruno@bruno-desktop:~/docker-images/example$ 
+
+with 'force' example:
+docker image rm -f eedf8bb96772
+
+
+Run and (re)connect to a Container
+----------------------------------
+bruno@bruno-desktop:~/docker-images/example$ docker image ls
+REPOSITORY                   TAG                 IMAGE ID            CREATED              SIZE
+brunokeymolen/otsu-project   latest              a3dff6a767e4        About a minute ago   1.23GB
+ubuntu                       16.04               77be327e4b63        2 weeks ago          124MB
+ubuntu                       18.04               72300a873c2c        2 weeks ago          64.2MB
+hello-world                  latest              fce289e99eb9        14 months ago        1.84kB
+
+RUN:
+bruno@bruno-desktop:~/docker-images/example$ docker run -i -t a3dff6a767e4 /bin/bash
+
+root@330dcb34ebd9:~/projects/otsu# ls /root/projects/otsu/
+LICENSE  Makefile  README.md  img  main.cpp  main.o  otsu  otsu.cpp  otsu.hpp  otsu.o  results
+
+
+Run with GUI:
+docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix  brunokeymolen/otsu-project
+
+Close:
+ctrl-d
+
+Daemonize:
+ctrl-p ctrl-q
+
+bruno@bruno-desktop:~/docker-images/example-otsu$ docker container ls
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS              PORTS               NAMES
+fee2ec7423d9        brunokeymolen/otsu-project   "/bin/sh -c /bin/bash"   35 seconds ago      Up 34 seconds       3000/tcp            goofy_chaplygin
+
+
+(Re)attach:
+bruno@bruno-desktop:~/docker-images/example-otsu$ docker attach fee2ec7423d9
+developer@fee2ec7423d9:~/projects/otsu$ 
+
+
+
+Save a container state after changes
+------------------------------------
+leave a container running at exit: ctrl-p ctrl-q
+
+bruno@bruno-desktop:~/docker-images/example-otsu$ docker container ls
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS              PORTS               NAMES
+fee2ec7423d9        brunokeymolen/otsu-project   "/bin/sh -c /bin/bash"   11 minutes ago      Up 11 minutes       3000/tcp            goofy_chaplygin
+
+docker commit fee2ec7423d9 otsu-2
+
+bruno@bruno-desktop:~/docker-images/example-otsu$ docker image ls
+REPOSITORY                   TAG                 IMAGE ID            CREATED              SIZE
+otsu-2                       latest              f222661a8cbb        About a minute ago   1.24GB
+brunokeymolen/otsu-project   latest              72c6c0d11ca6        19 minutes ago       1.24GB
+...
+
+
+Export a container
+------------------
+
+
+Other
+-----
+
+A more complex run (with ssh keys shared):
+ docker run -t -i -v $(dirname $SSH_AUTH_SOCK):$(dirname $SSH_AUTH_SOCK) -v $HOME/.gitconfig:/root/.gitconfig:ro -e SSH_AUTH_SOCK=$SSH_AUTH_SOCK  96af07354d8d  /bin/bash
+
+Another complex run:
+docker run -t -i -v $(dirname $SSH_AUTH_SOCK):$(dirname $SSH_AUTH_SOCK) -v $HOME/.gitconfig:/root/.gitconfig:ro -e SSH_AUTH_SOCK=$SSH_AUTH_SOCK -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:rw --privileged --net=host -v $HOME/.Xauthority:/root/.Xauthority -v $HOME/shared:/root/shared 96af07354d8d /bin/bash
+
+
+
