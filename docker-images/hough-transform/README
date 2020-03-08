@@ -1,0 +1,11 @@
+BUILD
+-----
+docker build -t hough-transform . 
+
+
+RUN
+---
+docker run -ti --rm \
+       -e DISPLAY=$DISPLAY \
+       -v /tmp/.X11-unix:/tmp/.X11-unix \
+       hough-transform
