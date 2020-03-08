@@ -2,6 +2,13 @@ FROM ubuntu:14.04
 
 RUN apt-get update && apt-get install -y firefox
 
+RUN apt-get install -y software-properties-common
+
+#add flash
+RUN add-apt-repository "deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner" && \
+    apt-get update && \
+    apt install -y adobe-flashplugin
+
 # Replace 1000 with your user / group id
 RUN export uid=1000 gid=1000 && \
     mkdir -p /home/developer && \
