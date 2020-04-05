@@ -1,0 +1,10 @@
+BUILD
+-----
+docker build -t openvino-movidius . 
+
+
+RUN
+---
+docker run -ti --device-cgroup-rule='c 189:* rmw' -v /dev/bus/usb:/dev/bus/usb openvino-movidius
+
+docker run -ti openvino-movidius
