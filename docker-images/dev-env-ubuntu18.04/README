@@ -1,0 +1,11 @@
+BUILD
+-----
+docker build -t dev-env-ubuntu-18.04 .
+
+
+RUN
+---
+share '/tmp' dir as '/tmp/dev'
+
+docker run -ti -v /tmp:/mnt/dev dev-env-ubuntu-18.04 /bin/bash
+

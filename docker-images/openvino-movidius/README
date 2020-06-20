@@ -1,3 +1,8 @@
+OpenVino toolkit 2018R5 (the same version as  on raspberry pi)
+-----------------------
+http://registrationcenter-download.intel.com/akdlm/irc_nas/15013/l_openvino_toolkit_p_2018.5.445.tgz
+
+
 BUILD
 -----
 docker build -t openvino-movidius . 

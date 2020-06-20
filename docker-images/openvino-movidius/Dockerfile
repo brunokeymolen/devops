@@ -7,6 +7,7 @@ MAINTAINER Bruno Keymolen
 ### Download openvino toolkit first,
 ### put it next to the dockerfile and adapt the OPENVINO_TOOLKIT_NAME below if needed
 ARG OPENVINO_TOOLKIT_NAME=l_openvino_toolkit_p_2020.1.023.tgz
+#ARG OPENVINO_TOOLKIT_NAME=l_openvino_toolkit_p_2019.3.376.tgz
 
 ENV TZ=America/New_York
 
@@ -74,6 +75,14 @@ RUN /bin/mkdir -p '/usr/local/lib' && \
     cd  /opt/libusb-1.0.22/ && \
     /usr/bin/install -c -m 644 libusb-1.0.pc '/usr/local/lib/pkgconfig' && \
     ldconfig
+
+RUN pip3 install --upgrade pip && \
+    pip install pip setuptools && \
+    pip install Pillow && \
+    pip install networkx && \
+    pip install defusedxml && \
+    pip install --upgrade tensorflow==1.15
+
 
 WORKDIR /opt/intel/openvino
 
