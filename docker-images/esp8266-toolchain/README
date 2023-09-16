@@ -1,0 +1,11 @@
+BUILD
+-----
+docker build -t esp8266-toolchain .
+
+
+RUN
+---
+share '/tmp' dir as '/tmp/dev'
+
+docker run -ti -v /tmp:/mnt/dev esp8266-toolchain /bin/bash
+
