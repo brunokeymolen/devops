@@ -21,7 +21,8 @@ RUN apt-get install -y --no-install-recommends \
       gperf \
       python \
       pip \
-      tar
+      tar \
+      openssh-client
 
 RUN useradd -ms /bin/bash esp && \
     chown esp -R /home/esp
@@ -31,6 +32,11 @@ RUN usermod -aG users esp && \
 
 RUN echo 'esp:password' | chpasswd
 
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+
+#
+# Continue as user "esp"
+#
 USER esp
 
 #Toolchain
@@ -59,8 +65,10 @@ RUN export IDF_PATH=/home/esp/toolchain/ESP8266_RTOS_SDK && \
     cd /home/esp && \
     cp -r $IDF_PATH/examples/get-started/hello_world .
 
-RUN echo "\nPlease use the following steps:\n make menuconfig CONFIG_SDK_PYTHON=python3\n do: SDK tool configuration>Python 2 interpreter, hit enter and set it to python3\n After you can as usual:\n  make" > /home/esp/README.txt
-RUN echo "\n\nSudo password for user esp: password\n\n" >> /home/esp/README.txt
+RUN ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa  
+
+RUN echo "\n\n* make menuconfig\n* make" > /home/esp/README.txt
+RUN echo "\n\nsudo password for user esp: 'password'\n\n" >> /home/esp/README.txt
 
 RUN echo "\ncat /home/esp/README.txt\n" >> /home/esp/.bashrc
 
