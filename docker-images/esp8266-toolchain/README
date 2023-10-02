@@ -2,6 +2,8 @@ BUILD
 -----
 docker build -t esp8266-toolchain .
 
+or, without caching (can solve certain 404 errors during (re)build)
+docker build --no-cache -t esp8266-toolchain .
 
 RUN
 ---
